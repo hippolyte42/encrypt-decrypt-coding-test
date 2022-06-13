@@ -38,6 +38,6 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 ## Running the project
     
     $ cd homework/
-    $ npm i         // install dependencies
+    $ npm i          // install dependencies
     $ npm run test   // run tests
 
