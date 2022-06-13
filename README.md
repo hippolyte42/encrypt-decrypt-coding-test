@@ -5,7 +5,7 @@
 ---
 ## Requirements
 
-For development, you will only need Node.js installed in your environement.
+You will only need Node.js installed in your environement.
 
 ### Node
 - #### Node installation on Windows
