@@ -1,6 +1,6 @@
 # Homework
 
-[WEB_3_ (2).pdf](https://github.com/hippolyte42/kanji-homework/files/8894816/WEB_3_.2.pdf)
+[homework.pdf](https://github.com/hippolyte42/kanji-homework/files/8894816/WEB_3_.2.pdf)
 
 ---
 ## Requirements
