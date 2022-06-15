@@ -29,7 +29,7 @@ beforeEach(async () => {
 describe(
   "encryptDecrypt returns the same results, in javascript as in solidity",
   () => {
-    it("deploys a contract", () => {
+    it("deploys the contract", () => {
       assert.ok(homework.options.address);
     });
 
