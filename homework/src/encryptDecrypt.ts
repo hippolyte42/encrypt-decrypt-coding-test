@@ -10,7 +10,7 @@ const encryptDecrypt = (data: Uint8Array, key: string): Uint8Array => {
   for (let i = 0; i < length; i += 32) {
     // Generate hash of the key and offset
     const hash = ethers.utils.arrayify(
-      ethers.utils.solidityKeccak256(["bytes", "uint"], [key, i]) // type because need size
+      ethers.utils.solidityKeccak256(["bytes", "uint"], [key, i])
     );
     // Read 32-bytes data chunk
     let chunk = data.slice(i, i + 32);

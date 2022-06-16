@@ -4,7 +4,7 @@ import { beforeEach, describe, it } from "mocha";
 import Web3 from "web3";
 import { Contract } from "web3-eth-contract";
 import jsEncryptDecrypt from "../src/encryptDecrypt";
-import encryptDecryptSwagg from "../src/encryptDecryptSwagg";
+import encryptDecryptShort from "../src/encryptDecryptShort";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");
@@ -36,10 +36,10 @@ describe(
     it(
       "encryptDecrypt returns the same results, in javascript as in solidity",
       async () => {
-        const data = ethers.utils.toUtf8Bytes("this.is.myBaseUri/"); // https://ethereum.stackexchange.com/questions/23058/how-to-convert-string-to-bytes32-in-web3js
+        const data = ethers.utils.toUtf8Bytes("this.is.myBaseUri/");
         const key = ethers.utils.solidityKeccak256(
           ["string", "uint256", "uint256", "address"],
-          ["myPassword", 1, 1, "0xe64399e90b3564215391Fe43645c5f2c8676115C"] // [password, chainId, batchTokenIndex, contractAddress]
+          ["myPassword", 42, 42, "0xe64399e90b3564215391Fe43645c5f2c8676115C"] // [password, chainId, batchTokenIndex, contractAddress]
         );
 
         const solidityResult = await homework.methods
@@ -52,18 +52,18 @@ describe(
     );
 
     it(
-      "encryptDecryptSwagg returns the same results, in javascript as in solidity",
+      "encryptDecryptShort returns the same results, in javascript as in solidity",
       async () => {
-        const data = ethers.utils.toUtf8Bytes("this.is.myBaseUri/"); // https://ethereum.stackexchange.com/questions/23058/how-to-convert-string-to-bytes32-in-web3js
+        const data = ethers.utils.toUtf8Bytes("this.is.myBaseUri/");
         const key = ethers.utils.solidityKeccak256(
           ["string", "uint256", "uint256", "address"],
-          ["myPassword", 1, 1, "0xe64399e90b3564215391Fe43645c5f2c8676115C"] // [password, chainId, batchTokenIndex, contractAddress]
+          ["myPassword", 42, 42, "0xe64399e90b3564215391Fe43645c5f2c8676115C"] // [password, chainId, batchTokenIndex, contractAddress]
         );
 
         const solidityResult = await homework.methods
           .encryptDecrypt(data, key)
           .call();
-        const javascriptResult = encryptDecryptSwagg(data, key);
+        const javascriptResult = encryptDecryptShort(data, key);
 
         assert.equal(solidityResult, ethers.utils.hexlify(javascriptResult));
       }
