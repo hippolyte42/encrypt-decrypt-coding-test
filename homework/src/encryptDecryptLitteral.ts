@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-const encryptDecrypt = (data: Uint8Array, key: string): Uint8Array => {
+const encryptDecryptLitteral = (data: Uint8Array, key: string): Uint8Array => {
   // Store data length on stack for later use
   const length = data && data?.length;
 
@@ -26,4 +26,4 @@ const encryptDecrypt = (data: Uint8Array, key: string): Uint8Array => {
   return result;
 };
 
-export default encryptDecrypt;
+export default encryptDecryptLitteral;

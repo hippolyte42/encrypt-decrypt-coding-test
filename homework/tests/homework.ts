@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { beforeEach, describe, it } from 'mocha';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import jsEncryptDecrypt from '../src/encryptDecrypt';
+import encryptDecryptLitteral from '../src/encryptDecryptLitteral';
 import encryptDecryptShort from '../src/encryptDecryptShort';
 
 const ganache = require('ganache-cli');
@@ -13,11 +13,10 @@ const { abi, evm } = require('../compile');
 
 let accounts: string[];
 let homework: Contract;
-let data: Uint8Array;
-let key: string;
+let testData: Uint8Array;
+let testKey: string;
 
 beforeEach(async () => {
-  // Get a list of all accounts
   accounts = await web3.eth.getAccounts();
   // deploy the homework smart contract
   homework = await new web3.eth.Contract(abi)
@@ -25,8 +24,10 @@ beforeEach(async () => {
       data: evm.bytecode.object
     })
     .send({ from: accounts[0], gas: 1000000 });
-  data = ethers.utils.toUtf8Bytes('this.is.myBaseUri/');
-  key = ethers.utils.solidityKeccak256(
+
+  // set testing variables
+  testData = ethers.utils.toUtf8Bytes('this.is.myBaseUri/');
+  testKey = ethers.utils.solidityKeccak256(
     ['string', 'uint256', 'uint256', 'address'],
     ['myPassword', 42, 42, '0xe64399e90b3564215391Fe43645c5f2c8676115C'] // [password, chainId, batchTokenIndex, contractAddress]
   );
@@ -37,39 +38,41 @@ describe('encryptDecrypt returns the same results, in javascript as in solidity'
     assert.ok(homework.options.address);
   });
 
-  it('encryptDecrypt returns the same results, in javascript as in solidity', async () => {
+  it('encryptDecryptLitteral returns the same results', async () => {
     const solidityResult = await homework.methods
-      .encryptDecrypt(data, key)
+      .encryptDecrypt(testData, testKey)
       .call();
-    const javascriptResult = jsEncryptDecrypt(data, key);
+    const javascriptResult = encryptDecryptLitteral(testData, testKey);
 
     assert.equal(solidityResult, ethers.utils.hexlify(javascriptResult));
   });
 
-  it('encryptDecryptShort returns the same results, in javascript as in solidity', async () => {
+  it('encryptDecryptShort returns the same results', async () => {
     const solidityResult = await homework.methods
-      .encryptDecrypt(data, key)
+      .encryptDecrypt(testData, testKey)
       .call();
-    const javascriptResult = encryptDecryptShort(data, key);
+    const javascriptResult = encryptDecryptShort(testData, testKey);
 
     assert.equal(solidityResult, ethers.utils.hexlify(javascriptResult));
   });
 
-  it('encryptDecrypt is symmetric, in javascript as in solidity: encryptDecrypt (encryptDecrypt (x, key), key) == x', async () => {
-    const solidityResult = await homework.methods
-      .encryptDecrypt(data, key)
+  it('encryptDecrypt is symmetric: encryptDecrypt (encryptDecrypt (x, testKey), testKey) == x', async () => {
+    const firstSolidityResult = await homework.methods
+      .encryptDecrypt(testData, testKey)
       .call();
-    const javascriptResult = encryptDecryptShort(data, key);
-
-    const solidityResult2 = await homework.methods
-      .encryptDecrypt(solidityResult, key)
+    const secondSolidityResult = await homework.methods
+      .encryptDecrypt(firstSolidityResult, testKey)
       .call();
-    const javascriptResult2 = encryptDecryptShort(javascriptResult, key);
+    assert.equal(secondSolidityResult, ethers.utils.hexlify(testData));
 
-    assert.equal(solidityResult2, ethers.utils.hexlify(data));
+    const firstJavascriptResult = encryptDecryptShort(testData, testKey);
+    const secondJavascriptResult = encryptDecryptShort(
+      firstJavascriptResult,
+      testKey
+    );
     assert.equal(
-      ethers.utils.hexlify(javascriptResult2),
-      ethers.utils.hexlify(data)
+      ethers.utils.hexlify(secondJavascriptResult),
+      ethers.utils.hexlify(testData)
     );
   });
 });
