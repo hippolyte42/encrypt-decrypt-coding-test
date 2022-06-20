@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import assert from 'assert';
 import { ethers } from 'ethers';
 import { beforeEach, describe, it } from 'mocha';
@@ -6,10 +7,8 @@ import { Contract } from 'web3-eth-contract';
 import jsEncryptDecrypt from '../src/encryptDecrypt';
 import encryptDecryptShort from '../src/encryptDecryptShort';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ganache = require('ganache-cli');
 const web3 = new Web3(ganache.provider());
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { abi, evm } = require('../compile');
 
 let accounts: string[];
@@ -56,8 +55,7 @@ describe('encryptDecrypt returns the same results, in javascript as in solidity'
     assert.equal(solidityResult, ethers.utils.hexlify(javascriptResult));
   });
 
-  it('encryptDecrypt is symmetric, in javascript as in solidity', async () => {
-    // encryptDecrypt (encryptDecrypt (x, key), key) == x
+  it('encryptDecrypt is symmetric, in javascript as in solidity: encryptDecrypt (encryptDecrypt (x, key), key) == x', async () => {
     const solidityResult = await homework.methods
       .encryptDecrypt(data, key)
       .call();
